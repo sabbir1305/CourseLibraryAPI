@@ -34,5 +34,29 @@ namespace CourseLibrary.API.Services
             throw new Exception($"Cannot fin exact property mapping instance for<{typeof(TSurce)},{typeof(TDestination)}>");
 
         }
+    
+    
+        public bool ValidMappingExistsFor<TSource,TDestination>(string fields)
+        {
+            var propertyMapping = GetPropertyMapping<TSource, TDestination>();
+            if (string.IsNullOrWhiteSpace(fields))
+                return true;
+
+            var fieldsAfterSplit = fields.Split(',');
+
+            foreach (var item in fieldsAfterSplit)
+            {
+                var trimmedField = item.Trim();
+                var indexOfFirstSpace = trimmedField.IndexOf(" ");
+
+                var propertyName = indexOfFirstSpace == -1 ? trimmedField : trimmedField.Remove(indexOfFirstSpace);
+
+                if (!propertyMapping.ContainsKey(propertyName))
+                    return false;
+            }
+
+            return true;
+        }
+    
     }
 }
